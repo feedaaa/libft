@@ -28,6 +28,7 @@ void	*ft_memchr(const void *s, int c, size_t n)
 	return (NULL);
 }
 
+
 //searches for a specific character ina memory block
 //to hold the pointer to the memory block
 //casting to ensure memory block is treated as an array
