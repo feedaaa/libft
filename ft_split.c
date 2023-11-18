@@ -12,56 +12,108 @@
 
 #include "libft.h"
 
-static int wordcount(char *str , char c)
+static int	wordcounter(char *str, char c)
 {
 	int	i;
 	int	word;
-	
+
 	i = 1;
-	word = 0;  
+	word = 0;
+	if (!str)
+		return (0);
 	while (str[i])
 	{
-		if ((str[i - 1] != c && str[i] == c) || (str[i]!= c && str[i + 1] == '\0'))
+		if (str[i] != c)
+		{
 			word++;
+			while (str[i] != c && str[i])
+				i++;
+		}
+		else
+			i++;
+	}
+	return (word);
+}
+
+static void	freeall(char **s, int j)
+{
+	if (!s)
+		return ;
+	while (s[j] != NULL)
+	{
+		free(s[j]);
+		j++;
+	}
+	free(s);
+}
+
+static char	allocation(const char *s, char c)
+{
+	char	**all;
+	int		word;
+
+	if (s == NULL || *s == '\0')
+	{
+		all = malloc(sizeof(char *));
+		if (!all)
+			return ;
+		all[0] = NULL;
+		return ((char *)all);
+	}
+	word = wordcounter((char *)s, c);
+	all = malloc(sizeof(char **) * (word + 1));
+	if (!all)
+		return (NULL);
+	all[word] = 0;
+	return (all);
+}
+
+static void	substring(char **all, const char *s, char c, int word)
+{
+	size_t	i;
+	int		end;
+	size_t	len;
+
+	i = 0;
+	end = 0;
+	while (s[i])
+	{
+		len = 0;
+		while (s[i + len] != c && s[i])
+			len++;
+		if (len && end < word)
+		{
+			all[end] = ft_substr(s, i, len);
+			if (!all[end])
+			{
+				freeall(all, end);
+				return ;
+			}
+			end++;
+		}
+		i += len;
 		i++;
 	}
-	return(word);	
 }
 
 char	**ft_split(char const *s, char c)
 {
-	char 	**mem;
+	char	**mem;
 	int		word;
-	int		end;
-	size_t	len;
-    size_t i;
-	
-	end = 0;
-	i = 0;
-	word = wordcount((char *)s,c);
-	mem = malloc(sizeof(char *) * word + 1);
-	if(!mem)
+
+	if (!s)
 		return (NULL);
-	mem[word] = NULL;
-  while (s[i])
-  {
-	len = 0;
-	while (s[i + len] != c &&  s[i + len])
-	
+	mem = allocation(s, c);
+	if (!mem)
+		return ;
+	if (*s == '\0' && c != '\0')
 	{
-		len++;
+		mem[0] = NULL;
+		return (mem);
 	}
-	if (len && end < word)
-	{
-	mem[end] = ft_substr(s, i, len );
-	if (mem[end] == NULL)
-		return (NULL);
-	end++;
-	}
-	i += len;
-	 i++;
-  }
-  return (mem);
+	word = wordcounter((char *)s, c);
+	substring(mem, s, c, word);
+	return (mem);
 }
 
 // int main() 
