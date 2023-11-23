@@ -22,9 +22,9 @@ int	counter(int n)
 		n = -n;
 		countnb++;
 	}
-	while (n >= 0)
+	while (n >= 10)
 	{
-		n = n / 10;
+		n /= 10;
 		countnb++;
 	}
 	return (countnb);
@@ -37,8 +37,8 @@ char	*ft_itoa(int n)
 	int		og_n;
 	int		lastdigi;
 
-	og_n = n;
 	count = counter(n);
+	og_n = n;
 	if (n == INT_MIN)
 		return (ft_strdup("-2147483648"));
 	if (n < 0)
